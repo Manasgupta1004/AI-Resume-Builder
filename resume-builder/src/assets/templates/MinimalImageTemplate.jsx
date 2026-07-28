@@ -109,13 +109,13 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                 <main className="col-span-2 p-8 pt-0">
 
                     {/* Summary */}
-                    {data.professional_summary && (
+                    {data.Professional_summary && (
                         <section className="mb-8">
                             <h2 className="text-sm font-semibold tracking-widest mb-3" style={{ color: accentColor }} >
                                 SUMMARY
                             </h2>
                             <p className="text-zinc-700 leading-relaxed">
-                                {data.professional_summary}
+                                {data.Professional_summary}
                             </p>
                         </section>
                     )}
@@ -155,13 +155,13 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                     )}
 
                     {/* Projects */}
-                    {data.project && data.project.length > 0 && (
+                    {data.projects && data.projects.length > 0 && (
                         <section>
                             <h2 className="text-sm uppercase tracking-widest font-semibold" style={{ color: accentColor }}>
                                 PROJECTS
                             </h2>
                             <div className="space-y-4">
-                                {data.project.map((project, index) => (
+                                {data.projects.map((project, index) => (
                                     <div key={index}>
                                         <h3 className="text-md font-medium text-zinc-800 mt-3">{project.name}</h3>
                                         <p className="text-sm mb-1" style={{ color: accentColor }} >

@@ -20,6 +20,7 @@ const project_form = ({ data, onChange }) => {
         updated[index] = { ...updated[index], [field]: value }
         onChange(updated)
     }
+    console.log("project data", data)
     return (
         <div className='space-y-6'>
             <div className='flex items-center justify-between'>

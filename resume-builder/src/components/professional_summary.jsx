@@ -2,6 +2,7 @@ import { Sparkle, SparkleIcon, Sparkles } from 'lucide-react'
 import React from 'react'
 
 const professional_summary = ({ data, onChange, setResumeData }) => {
+   console.log("ProfessionalSummary data:", data);
   return (
     <div className='space-y-4'>
       <div className="flex items-center justify-between">

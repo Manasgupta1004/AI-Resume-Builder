@@ -1,6 +1,6 @@
 // crotroller for enhance a resume professional summary
 // post: /api/ai/enhance-pro-sum
-import Resume  from "../models/resume.js"
+import Resume from "../models/resume.js"
 import { model } from "mongoose"
 import ai from "../config/ai.js"
 
@@ -166,6 +166,14 @@ export const uploadResume = async (req, res) => {
         })
         return res.status(200).json({ resumeId: newResume._id })
     } catch (error) {
+
+        // console.log(error.response?.status);
+        // console.log(error.response?.data);
+        // console.log(error.message);
+
+        // return res.status(500).json({
+        //     message: error.message
+        // });
         return res.status(400).json({ message: error.message })
     }
 }

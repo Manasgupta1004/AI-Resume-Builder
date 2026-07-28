@@ -65,7 +65,7 @@ const resumeSchema = new mongoose.Schema({
             default: ''
         }
     },
-    express:[
+    experience:[
         {
             company: {type: String},
             position: {type: String},
@@ -87,7 +87,7 @@ const resumeSchema = new mongoose.Schema({
             institution: {type: String},
             degree: {type: String},
             field: {type: String},
-            gpa: {type: String},
+            gpa: {type: String}, 
             graduation_date: {type: String}
         }
     ]

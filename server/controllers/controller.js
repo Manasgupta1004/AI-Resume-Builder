@@ -27,11 +27,13 @@ export const registerUser = async (req, res) => {
             email,
             password: hasedPassword
         })
+        await newUser.save();
+
         const token = generateToken(newUser._id)
-        user.password = undefined
+        newUser.password = undefined
         return res.status(201).json({ message: "User created successfully", token, user: newUser })
     } catch (error) {
-        return res.status(400).json({ message: "Internal server error", error })
+        return res.status(400).json({ message: "Internal server error register mai", error })
     }
 }
 
@@ -74,12 +76,13 @@ export const getUserById = async (req, res) => {
     }
 }
 
-export const getUserResume = async () => {
+export const getUserResume = async (req, res) => {
     try {
         const userId = req.userId
         const resumes = await Resume.find({ userId })
         return res.status(200).json({ resumes })
     } catch (error) {
-        return res.status(400).json({ message: "Internal server error", error })
+        return res.status(400).json({ message: "Internal server error getresume mai", error})
+        console.log(error, "error getresume mai");
     }
 }

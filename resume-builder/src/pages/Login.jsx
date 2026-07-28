@@ -1,10 +1,15 @@
 import { Mail, UserIcon, Lock } from 'lucide-react'
- import React from 'react'
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import api from '../configs/api'
+import { login } from '../app/features/authSlice'
+import { toast } from 'react-hot-toast'
 
 const Login = () => {
   const query = new URLSearchParams(window.location.search);
   const initialState = query.get('state')
-  const [state, setState] = React.useState(initialState ||  "login")
+  const [state, setState] = React.useState(initialState || "login")
+  const dispatch = useDispatch()
 
   const [formData, setFormData] = React.useState({
     name: '',
@@ -14,7 +19,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    try {
+      const { data } = await api.post(`/api/users/${state}`, formData)
+      dispatch(login(data))
+      localStorage.setItem('token', data.token)
+      toast.success(state === "login" ? "Login successful" : "Account created successfully")
+    } catch (error) {
+      toast(error.response?.data?.message || error.message)
+    }
   }
 
   const handleChange = (e) => {
@@ -50,7 +62,7 @@ const Login = () => {
         </button>
         <p onClick={() => setState(prev => prev === "login" ? "register" : "login")} className="text-gray-500 text-sm mt-3 mb-11">{state === "login" ? "Don't have an account?" : "Already have an account?"} <a href="#" className="text-green-500 hover:underline">click here</a></p>
       </form>
-    </div> 
+    </div>
   )
 }
 

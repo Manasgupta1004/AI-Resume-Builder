@@ -3,9 +3,9 @@ import Resume from "../models/resume.js"
 import fs from "fs"
 
 
-export const createResume = async () => {
+export const createResume = async (req, res) => {
     try {
-        const userTd = req.userId
+        const userId = req.userId
         const { title } = req.body
 
         const newResume = await Resume.create({
@@ -13,23 +13,26 @@ export const createResume = async () => {
         })
         return res.status(201).json({ message: "Resume created successfully", resume: newResume })
     } catch (error) {
-        return res.status(400).json({ message: "Internal server error", error })
+        return res.status(400).json({ message: "Internal server error haii", error })
+        console.log(error)
     }
 }
-export const deleteResume = async () => {
+export const deleteResume = async (req, res) => {
     try {
-        const userTd = req.userId
+        const userId = req.userId
         const { resumeId } = req.params
 
         await Resume.findOneAndDelete({ userId, _id: resumeId })
         return res.status(200).json({ message: "Resume deleted successfully" })
     } catch (error) {
+         console.log(error, "error delete resume mai");
         return res.status(400).json({ message: "Internal server error", error })
+        console.log(error, "error delete resume mai");
     }
 }
-export const getResumeById = async () => {
+export const getResumeById = async (req, res) => {
     try {
-        const userTd = req.userId
+        const userId = req.userId
         const { resumeId } = req.params
 
         const resume = await Resume.findOne({ userId, _id: resumeId })
@@ -45,7 +48,7 @@ export const getResumeById = async () => {
     }
 }
 
-export const getPublicResumeById = async () => {
+export const getPublicResumeById = async (req, res) => {
     try {
         const { resumeId } = req.params
         const resume = await Resume.findOne({ public: true, _id: resumeId })
@@ -58,7 +61,7 @@ export const getPublicResumeById = async () => {
     }
 }
 
-export const updateResume = async () => {
+export const updateResume = async (req, res) => {
     try {
         const userId = req.userId
         const { resumeId, resumeData, removeBackground } = req.body
@@ -79,7 +82,7 @@ export const updateResume = async () => {
             resumeDataCopy.personal_info.image = response.url
         }
 
-        let resumeDataCopy = JSON.parse(resumeData)
+        let resumeDataCopy = JSON.parse(JSON.stringify(resumeData))
 
         const resume = await Resume.findOneAndUpdate({ userId, _id: resumeId },
             resumeDataCopy, { new: true }
@@ -88,5 +91,6 @@ export const updateResume = async () => {
 
     } catch (error) {
         return res.status(400).json({ message: "Internal server error", error })
+        console.log(error, "error update resume mai")
     }
 }

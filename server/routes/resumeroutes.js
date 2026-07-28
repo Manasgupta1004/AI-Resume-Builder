@@ -7,7 +7,7 @@ const resumerouter = express.Router()
 
 resumerouter.post('/create', protect, createResume)
 resumerouter.put('/update', upload.single('image'), protect, updateResume )
-resumerouter.delete('delete/:resumeId', protect, deleteResume)
+resumerouter.delete('/delete/:resumeId', protect, deleteResume)
 resumerouter.get('/get/:resumeId', protect, getResumeById)
 resumerouter.get('/public/:resumeId', getPublicResumeById)
 

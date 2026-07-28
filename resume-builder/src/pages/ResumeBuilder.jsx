@@ -11,16 +11,22 @@ import ExperienceForm from '../components/exprience_form'
 import EducationForm from '../components/education_form'
 import ProjectForm from '../components/project_form'
 import SkillsForm from '../components/skills_form'
+import { useSelector } from 'react-redux'
+import api from '../configs/api'
+import { toast } from 'react-hot-toast'
 const ResumeBuilder = () => {
   const { resumeId } = useParams()
+
+  const { token } = useSelector(state => state.auth)
+
   const [resumeData, setResumeData] = React.useState({
     _id: '',
     title: '',
     personal_info: {},
-    professional_summary: '',
+    Professional_summary: '',
     experience: [],
     education: [],
-    project: [],
+    projects: [],
     skills: [],
     template: 'Classic',
     accent_color: '#3B82F6',
@@ -28,10 +34,19 @@ const ResumeBuilder = () => {
   })
 
   const loadExitingResume = async () => {
-    const resume = dummyResumeData.find(resume => resume._id === resumeId)
-    if (resume) {
-      setResumeData(resume)
-      document.title = resume.title
+    try {
+      const { data } = await api.get(`api/resumes/get/${resumeId}`, {
+        headers: {
+          'Authorization': token
+        }
+      })
+      if (data.resume) {
+        setResumeData(data.resume)
+        document.title = data.resume.title
+      }
+    } catch (error) {
+      toast.error('Error loading resume. Please try again later.')
+      console.error('Error loading resume:', error)
     }
   }
 
@@ -54,16 +69,53 @@ const ResumeBuilder = () => {
   }, [])
 
   const changeResumeVisibility = async () => {
-    setResumeData({...resumeData, public: !resumeData.public})
+    try {
+      const formData = new FormData();
+      formData.append('resumeId', resumeId);
+      formData.append('resumeData', JSON.stringify({ public: !resumeData.public }));
+      const { data } = await api.put('api/resumes/update', formData, {
+        headers: {
+          'Authorization': token
+        }
+      })
+      setResumeData({ ...resumeData, public: !resumeData.public })
+      toast.success(data.message)
+    } catch (error) {
+      toast.error('Error updating resume visibility. Please try again later.')
+      console.error('Error updating resume visibility:', error)
+    }
   }
-
+  const saveResume = async () => {
+    try {
+      let updatedResumeData = structuredClone(resumeData);
+      // remove image from updatedresumedata
+      if (typeof resumeData.personal_info.image === 'object') {
+        delete updatedResumeData.personal_info.image;
+      }
+      const formData = new FormData();
+      formData.append('resumeId', resumeId);
+      formData.append('resumeData', JSON.stringify(updatedResumeData));
+      removeBackground && formData.append('removeBackground', 'yes')
+      typeof resumeData.personal_info.image === 'object' && formData.append('image', resumeData.personal_info.image)
+      const { data } = await api.put('/api/resumes/update', formData, {
+        headers: {
+          Authorization: token
+        }
+      })
+      setResumeData(data.resume)
+      toast.success(data.message)
+    } catch (error) {
+      toast.error('Error saving resume changes. Please try again later.')
+      console.error('Error saving resume changes:', error)
+    }
+  }
   const handleShare = () => {
     const frontendUrl = window.location.href.split('/app/')[0]
     const resumeUrl = frontendUrl + '/view/' + resumeId
 
-    if(navigator.share){
-      navigator.share({url: resumeUrl, text: 'My Resume'})
-    }else{
+    if (navigator.share) {
+      navigator.share({ url: resumeUrl, text: 'My Resume' })
+    } else {
       alert('Share not supported on this browser.')
     }
   }
@@ -71,7 +123,9 @@ const ResumeBuilder = () => {
   const downloadResume = () => {
     window.print();
   }
-
+  //console.log(resumeData);
+  // console.log("Summary:", resumeData.Professional_summary);
+  // console.log("Projects:", resumeData.projects);
   return (
     <div>
       <div className='max-w-7xl mx-auto px-4 py-6'>
@@ -122,8 +176,8 @@ const ResumeBuilder = () => {
                 {
                   activeSection.id === 'summary' && (
                     <div>
-                      <ProfessionalSummary data={resumeData.professional_summary}
-                        onChange={(data) => setResumeData(prev => ({ ...prev, professional_summary: data }))}
+                      <ProfessionalSummary data={resumeData.Professional_summary}
+                        onChange={(data) => setResumeData(prev => ({ ...prev, Professional_summary: data }))}
                         setResumeData={setResumeData} />
                     </div>
                   )
@@ -145,7 +199,8 @@ const ResumeBuilder = () => {
                 {
                   activeSection.id === 'project' && (
                     <div>
-                      <ProjectForm data={resumeData.project} onChange={(data) => setResumeData(prev => ({ ...prev, project: data }))} />
+                      <ProjectForm data={resumeData.projects}
+                        onChange={(data) => setResumeData(prev => ({ ...prev, projects: data }))} />
                     </div>
                   )
                 }
@@ -156,7 +211,7 @@ const ResumeBuilder = () => {
                 )
                 }
               </div>
-              <button className='bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-400 transition-all rounded-md px-6 py-2 mt-6 text-sm'>
+              <button onClick={() => { toast.promise(saveResume, { loading: 'Saving...' }) }} className='bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-400 transition-all rounded-md px-6 py-2 mt-6 text-sm'>
                 Save Changes
               </button>
             </div>
@@ -183,7 +238,7 @@ const ResumeBuilder = () => {
                   }
                 </button>
                 <button onClick={downloadResume}
-                 className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-green-100 to-green-200 text-green-600 rounded-lg ring-green-300 hover:ring transition-colors'>
+                  className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-green-100 to-green-200 text-green-600 rounded-lg ring-green-300 hover:ring transition-colors'>
                   <DownloadIcon className='size-4' />Download
                 </button>
               </div>

@@ -1,15 +1,17 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Navigate, Link, useNavigate } from 'react-router-dom'
-
+import { useDispatch } from 'react-redux'
+import { logout } from '../app/features/authSlice'
 const navbare = () => {
-    const user = {
-        name: "John Doe",
-    }
+    const { user } = useSelector(state => state.auth)
     const Navigate = useNavigate()
+    const dispatch = useDispatch()
     const logoutuser = () => {
         const confirm = window.confirm("Are you sure to logout your account")
         if (confirm) {
             Navigate('/')
+            dispatch(logout())
         }
     }
     return (
