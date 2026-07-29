@@ -23,7 +23,7 @@ const ResumeBuilder = () => {
     _id: '',
     title: '',
     personal_info: {},
-    Professional_summary: '',
+    professional_summary: '',
     experience: [],
     education: [],
     projects: [],
@@ -79,9 +79,7 @@ const ResumeBuilder = () => {
         }
       })
       setResumeData({ ...resumeData, public: !resumeData.public })
-      toast.success(data.message)
     } catch (error) {
-      toast.error('Error updating resume visibility. Please try again later.')
       console.error('Error updating resume visibility:', error)
     }
   }
@@ -176,8 +174,8 @@ const ResumeBuilder = () => {
                 {
                   activeSection.id === 'summary' && (
                     <div>
-                      <ProfessionalSummary data={resumeData.Professional_summary}
-                        onChange={(data) => setResumeData(prev => ({ ...prev, Professional_summary: data }))}
+                      <ProfessionalSummary data={resumeData.professional_summary}
+                        onChange={(data) => setResumeData(prev => ({ ...prev, professional_summary: data }))}
                         setResumeData={setResumeData} />
                     </div>
                   )

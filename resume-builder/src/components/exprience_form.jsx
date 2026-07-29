@@ -1,7 +1,14 @@
-import { Briefcase, Plus, Sparkles, Trash2 } from 'lucide-react'
+import { Briefcase, Loader2, Plus, Sparkles, Trash2 } from 'lucide-react'
 import React from 'react'
+import api from '../configs/api'
+import { toast } from 'react-hot-toast'
+import { useSelector } from 'react-redux'
+import { useState } from 'react'
 
 const exprience_form = ({ data, onChange }) => {
+
+    const { token } = useSelector(state => state.auth)
+    const [isGeneratingIndex, setIsGeneratingIndex] = useState(-1)
 
 
     const addexperience = () => {
@@ -25,6 +32,23 @@ const exprience_form = ({ data, onChange }) => {
             ...updated[index], [field]: value
         }
         onChange(updated)
+    }
+
+    const generateDescription = async (index) => {
+        setIsGeneratingIndex(index)
+        const experience = data[index]
+        const propmt = `enhace this job description ${experience.description} for the position of
+         ${experience.position} at ${experience.company}.`
+        try {
+            const { data } = await api.post('/api/ai/enhance-job-desc', {
+                userContent: propmt
+            }, { headers: { Authorization: token } })
+            updatedExperience(index, 'description', data.enhancedContent)
+        } catch (error) {
+            toast.error(error?.response?.data?.message || error.message)
+        } finally {
+            setIsGeneratingIndex(-1)
+        }
     }
     return (
         <div className='space-y-4'>
@@ -78,8 +102,8 @@ const exprience_form = ({ data, onChange }) => {
                                 <div className='space-y-2'>
                                     <div className='flex items-center justify-between mt-5'>
                                         <label className='text-sm font-semibold text-gray-700'>Job Description</label>
-                                        <button className="flex items-center gap-1 px-2 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors disabled:opacity-50">
-                                            <Sparkles className='w-3 h-3' />
+                                        <button disabled={isGeneratingIndex === index || !experience.position || !experience.company} onClick={() => generateDescription(index)} className="flex items-center gap-1 px-2 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors disabled:opacity-50">
+                                            {isGeneratingIndex === index ? (<Loader2 className='animate-spin h-3 w-3' />) : <Sparkles className='w-3 h-3' />}
                                             Enhance with AI
                                         </button>
                                     </div>

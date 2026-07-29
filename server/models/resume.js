@@ -12,7 +12,7 @@ const resumeSchema = new mongoose.Schema({
     },
     public: {
         type: Boolean,
-        default: false
+        default: true
     },
     template: {
         type: String,
@@ -22,7 +22,7 @@ const resumeSchema = new mongoose.Schema({
         type: String,
         default: '#3B82F6'
     },
-    Professional_summary: {
+    professional_summary: {
         type: String,
         default: ''
     },

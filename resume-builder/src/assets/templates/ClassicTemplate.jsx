@@ -53,12 +53,12 @@ const ClassicTemplate = ({ data, accentColor }) => {
             </header>
 
             {/* Professional Summary */}
-            {data.Professional_summary && (
+            {data.professional_summary && (
                 <section className="mb-6">
                     <h2 className="text-xl font-semibold mb-3" style={{ color: accentColor }}>
                         PROFESSIONAL SUMMARY
                     </h2>
-                    <p className="text-gray-700 leading-relaxed">{data.Professional_summary}</p>
+                    <p className="text-gray-700 leading-relaxed">{data.professional_summary}</p>
                 </section>
             )}
 

@@ -4,19 +4,19 @@ import ClassicTemplate from '../assets/templates/ClassicTemplate'
 import MinimalImage from '../assets/templates/MinimalImageTemplate'
 import Minimal from '../assets/templates/MinimalTemplate'
 
-const resume_preview = ({data, template, accentColor, classes = ''}) => {
-    const renderTemplate = () => {
-        switch(template){
-            case 'Mordern':
-                return <MordernTemplate data={data} accentColor={accentColor} />
-            case 'Classic':
-                return <ClassicTemplate data={data} accentColor={accentColor} />
-            case 'Minimal':
-                return <Minimal data={data} accentColor={accentColor} />
-            default:
-                return <MinimalImage data={data} accentColor={accentColor} />    
-        }
+const resume_preview = ({ data, template, accentColor, classes = '' }) => {
+  const renderTemplate = () => {
+    switch (template) {
+      case 'Mordern':
+        return <MordernTemplate data={data} accentColor={accentColor} />
+      case 'Classic':
+        return <ClassicTemplate data={data} accentColor={accentColor} />
+      case 'Minimal':
+        return <Minimal data={data} accentColor={accentColor} />
+      default:
+        return <MinimalImage data={data} accentColor={accentColor} />
     }
+  }
   return (
     <div className='w-full bg-gray-100'>
       <div id="resume-preview" className={'border border-gray-200 print:shadow-none print:border-none' + classes}>
